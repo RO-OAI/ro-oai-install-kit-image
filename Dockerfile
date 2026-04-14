@@ -32,10 +32,26 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     openssh-client \
     curl \
     wget \
+    unzip \
+    zip \
     sudo \
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
     && echo "${NB_USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${NB_USER} \
     && chmod 0440 /etc/sudoers.d/${NB_USER}
+
+# Pre-download NLP models for offline use
+USER ${NB_UID}
+ENV OFFLINE_NLP_DIR="/home/${NB_USER}/offline_nlp_assets"
+ENV NLTK_DATA="${OFFLINE_NLP_DIR}/nltk_data" \
+    HF_HOME="${OFFLINE_NLP_DIR}/hf_home" \
+    GENSIM_DATA_DIR="${OFFLINE_NLP_DIR}/gensim_data" \
+    TRANSFORMERS_OFFLINE=1 \
+    HF_HUB_OFFLINE=1
+
+COPY --chown=${NB_UID}:${NB_GID} prepare_nlp_offline.py /tmp/prepare_nlp_offline.py
+RUN TRANSFORMERS_OFFLINE=0 HF_HUB_OFFLINE=0 /opt/conda/bin/python /tmp/prepare_nlp_offline.py \
+    && rm /tmp/prepare_nlp_offline.py \
+    && fix-permissions "${OFFLINE_NLP_DIR}"
 
 # Add test notebook
 USER root
