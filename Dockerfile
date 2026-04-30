@@ -3,23 +3,32 @@ FROM quay.io/jupyter/scipy-notebook:python-3.11
 RUN mamba install --yes \
     'matplotlib<=3.7.4' \
     'seaborn' \
+    'plotly' \
     'pytorch' \
+    'torchvision' \
+    'pytorch-lightning' \
+    'torchmetrics' \
     'catboost' \
     'opencv' \
     'xgboost' \
+    'lightgbm' \
     'transformers' \
+    'datasets' \
+    'evaluate' \
     'spacy' \
     'nltk' \
     'gensim' \
     'fasttext' \
-    'lightgbm' \
-    'torchvision' \
     'autoviz' \
-    'datasets' \
-    'evaluate' \
-    'pytorch-lightning' \
     'tensorboard' \
-    'torchmetrics' \
+    'scikit-learn' \
+    'scikit-image' \
+    'pillow' \
+    'joblib' \
+    'tqdm' \
+    'pandas' \
+    'numpy' \
+    'scipy' \
     && mamba clean --all -f -y \
     && fix-permissions "${CONDA_DIR}" \
     && fix-permissions "/home/${NB_USER}"
